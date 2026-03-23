@@ -1,21 +1,39 @@
 # Virtual environment
 .venv/
 venv/
+env/
+ENV/
 
 # Environment secrets
 .env
+.envrc
 
 # Python cache
 *.pyc
+*.py[codz]
 __pycache__/
+*.egg-info/
 
 # PyCharm
 .idea/
 
 # Django
 *.log
+local_settings.py
 staticfiles/
 media/
 
 # Database
 *.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# Distribution / packaging
+build/
+dist/
+*.egg
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
