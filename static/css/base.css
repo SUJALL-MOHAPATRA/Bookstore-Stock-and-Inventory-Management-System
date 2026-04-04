@@ -269,3 +269,10 @@ button[type="submit"]:hover { background: #34495e; }
     color: #27ae60;
     border-left: 4px solid #27ae60;
 }
+
+/* Navbar active link */
+.nav-links a.active {
+    border-bottom: 2px solid white;
+    padding-bottom: 2px;
+    font-weight: bold;
+}
