@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}{{ action }} Book — BISMMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ action }} Book</h1>
+    <a href="{% url 'inventory:book_list' %}" class="btn secondary">Back</a>
+</div>
+
+<div class="form-card">
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <span class="field-error">{{ field.errors.0 }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn">{{ action }} Book</button>
+    </form>
+</div>
+{% endblock %}

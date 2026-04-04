@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Low Stock Report — BISMMS{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Low Stock Report</h1>
+    <a href="{% url 'reports:stock_report' %}" class="btn secondary">Back to Reports</a>
+</div>
 
-</body>
-</html>
+{% if low_stock_books %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Current Quantity</th>
+            <th>Reorder Level</th>
+            <th>Shortage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in low_stock_books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.category|default:"—" }}</td>
+            <td><span class="badge danger">{{ book.quantity }}</span></td>
+            <td>{{ book.reorder_level }}</td>
+            <td>{{ book.reorder_level|add:"-"|add:book.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty-msg">No low stock items. All books are above reorder levels.</p>
+{% endif %}
+{% endblock %}
