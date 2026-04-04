@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load static %}
+<nav class="navbar">
+    <div class="nav-brand">BISMMS</div>
+    <div class="nav-links">
+        <a href="{% url 'dashboard:index' %}">Dashboard</a>
+        <a href="#">Books</a>
+        <a href="#">Stock In</a>
+        <a href="#">Stock Out</a>
 
-</body>
-</html>
+        {% if user.role == 'admin' or user.role == 'manager' %}
+            <a href="#">Suppliers</a>
+            <a href="#">Reports</a>
+        {% endif %}
+
+        {% if user.is_staff %}
+            <a href="{% url 'admin:index' %}">Admin Panel</a>
+        {% endif %}
+    </div>
+    <div class="nav-user">
+        {{ user.username }} ({{ user.role }})
+        <a href="{% url 'accounts:logout' %}">Logout</a>
+    </div>
+</nav>
