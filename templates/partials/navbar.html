@@ -3,13 +3,17 @@
     <div class="nav-brand">BISMMS</div>
     <div class="nav-links">
         <a href="{% url 'dashboard:index' %}">Dashboard</a>
-        <a href="{% url 'inventory:book_list' %}">Books</a>
-        <a href="{% url 'stock:stockin_form' %}">Stock In</a>
-        <a href="{% url 'stock:stockout_form' %}">Stock Out</a>
+
+        {% if user.role == 'admin' or user.role == 'manager' or user.role == 'staff' %}
+            <a href="{% url 'inventory:book_list' %}">Books</a>
+            <a href="{% url 'stock:stockin_form' %}">Stock In</a>
+            <a href="{% url 'stock:stockout_form' %}">Stock Out</a>
+        {% endif %}
 
         {% if user.role == 'admin' or user.role == 'manager' %}
             <a href="{% url 'suppliers:supplier_list' %}">Suppliers</a>
             <a href="{% url 'reports:stock_report' %}">Reports</a>
+            <a href="{% url 'alerts:alert_list' %}">Alerts</a>
         {% endif %}
 
         {% if user.is_staff %}

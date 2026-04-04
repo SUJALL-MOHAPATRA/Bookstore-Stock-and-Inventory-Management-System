@@ -252,3 +252,20 @@ button[type="submit"]:hover { background: #34495e; }
     color: #777;
 }
 .summary-card.danger h3 { color: #c0392b; }
+
+/* Alert banner */
+.alert-banner {
+    padding: 14px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    background: #fdecea;
+    color: #c0392b;
+    border-left: 4px solid #c0392b;
+}
+.alert-banner.success {
+    background: #eafaf1;
+    color: #27ae60;
+    border-left: 4px solid #27ae60;
+}
