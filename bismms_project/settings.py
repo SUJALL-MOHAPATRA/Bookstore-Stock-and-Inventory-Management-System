@@ -1,3 +1,5 @@
+#bismms_project\settings.py
+
 """
 Django settings for BISMMS project.
 Bookstore Inventory and Stock Maintenance Management System

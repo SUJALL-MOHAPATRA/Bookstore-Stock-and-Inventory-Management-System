@@ -1,3 +1,4 @@
+#stock\models.py
 from django.db import models
 from apps.inventory.models import Book
 from apps.suppliers.models import Supplier
