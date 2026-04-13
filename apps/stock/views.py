@@ -5,6 +5,7 @@ from django.contrib import messages
 from .models import StockIn, StockOut
 from .forms import StockInForm, StockOutForm
 from apps.inventory.models import Book
+from apps.alerts.utils import send_low_stock_email
 
 
 @login_required
@@ -39,8 +40,10 @@ def stockout_form(request):
             book.quantity -= stock_out.quantity
             book.save()
             # Check low stock alert
+            # Check low stock alert
             if book.is_low_stock():
                 messages.warning(request, f'Low stock alert: {book.title} has only {book.quantity} copies left.')
+                send_low_stock_email(book)
             else:
                 messages.success(request, f'Stock-Out recorded. {book.title} quantity updated to {book.quantity}.')
             return redirect('stock:stock_history')
