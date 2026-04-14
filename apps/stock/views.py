@@ -1,4 +1,4 @@
-#stock\views.py
+# stock/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -6,6 +6,7 @@ from .models import StockIn, StockOut
 from .forms import StockInForm, StockOutForm
 from apps.inventory.models import Book
 from apps.alerts.utils import send_low_stock_email
+from apps.audit.utils import log_action
 
 
 @login_required
@@ -14,10 +15,10 @@ def stockin_form(request):
         form = StockInForm(request.POST)
         if form.is_valid():
             stock_in = form.save()
-            # Update book quantity
             book = stock_in.book
             book.quantity += stock_in.quantity
             book.save()
+            log_action(request.user, 'Stock-In', f'"{book.title}" — {stock_in.quantity} copies added by "{request.user.username}". New quantity: {book.quantity}.')
             messages.success(request, f'Stock-In recorded. {book.title} quantity updated to {book.quantity}.')
             return redirect('stock:stock_history')
     else:
@@ -39,7 +40,7 @@ def stockout_form(request):
             stock_out.save()
             book.quantity -= stock_out.quantity
             book.save()
-            # Check low stock alert
+            log_action(request.user, 'Stock-Out', f'"{book.title}" — {stock_out.quantity} copies sold by "{request.user.username}". Remaining: {book.quantity}.')
             # Check low stock alert
             if book.is_low_stock():
                 messages.warning(request, f'Low stock alert: {book.title} has only {book.quantity} copies left.')
@@ -60,8 +61,3 @@ def stock_history(request):
         'stock_ins': stock_ins,
         'stock_outs': stock_outs,
     })
-
-
-from django.shortcuts import render
-
-# Create your views here.

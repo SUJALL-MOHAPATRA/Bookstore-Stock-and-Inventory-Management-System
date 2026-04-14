@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'apps.alerts',
     'apps.reports',
     'apps.dashboard',
+    'apps.audit',
 ]
 
 # ------------------------------------------------------------------

@@ -18,6 +18,7 @@
 
         {% if user.role == 'admin' %}
             <a href="{% url 'accounts:user_list' %}" class="{% if request.resolver_match.url_name == 'user_list' or request.resolver_match.url_name == 'user_add' or request.resolver_match.url_name == 'user_edit' %}active{% endif %}">Users</a>
+            <a href="{% url 'audit:audit_log' %}">Audit Log</a>
         {% endif %}
 
         {% if user.is_staff %}

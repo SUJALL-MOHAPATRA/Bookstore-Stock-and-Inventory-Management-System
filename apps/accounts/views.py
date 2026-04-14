@@ -1,9 +1,12 @@
+# accounts/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser
 from .forms import UserCreateForm, UserEditForm
+from apps.audit.utils import log_action
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -14,14 +17,19 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            log_action(user, 'Login', f'User "{user.username}" logged in.')
             return redirect('dashboard:index')
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'accounts/login.html')
 
+
 def logout_view(request):
+    if request.user.is_authenticated:
+        log_action(request.user, 'Logout', f'User "{request.user.username}" logged out.')
     logout(request)
     return redirect('accounts:login')
+
 
 @login_required
 def user_list(request):
@@ -30,6 +38,7 @@ def user_list(request):
         return redirect('dashboard:index')
     users = CustomUser.objects.all().order_by('username')
     return render(request, 'accounts/user_list.html', {'users': users})
+
 
 @login_required
 def user_add(request):
@@ -42,11 +51,13 @@ def user_add(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.save()
+            log_action(request.user, 'User Created', f'Admin "{request.user.username}" created user "{user.username}" with role "{user.role}".')
             messages.success(request, f'User {user.username} created successfully.')
             return redirect('accounts:user_list')
     else:
         form = UserCreateForm()
     return render(request, 'accounts/user_form.html', {'form': form, 'action': 'Add'})
+
 
 @login_required
 def user_edit(request, pk):
@@ -58,11 +69,13 @@ def user_edit(request, pk):
         form = UserEditForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            log_action(request.user, 'User Edited', f'Admin "{request.user.username}" edited user "{user.username}".')
             messages.success(request, f'User {user.username} updated successfully.')
             return redirect('accounts:user_list')
     else:
         form = UserEditForm(instance=user)
     return render(request, 'accounts/user_form.html', {'form': form, 'action': 'Edit'})
+
 
 @login_required
 def user_deactivate(request, pk):
@@ -76,6 +89,7 @@ def user_deactivate(request, pk):
     if request.method == 'POST':
         user.is_active = False
         user.save()
+        log_action(request.user, 'User Deactivated', f'Admin "{request.user.username}" deactivated user "{user.username}".')
         messages.success(request, f'User {user.username} deactivated.')
         return redirect('accounts:user_list')
     return render(request, 'accounts/user_confirm_deactivate.html', {'user': user})

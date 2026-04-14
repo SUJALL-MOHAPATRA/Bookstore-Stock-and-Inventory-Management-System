@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Log — BISMMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Audit Log</h2>
+    <p class="text-muted">Full record of significant system actions. Visible to Admin only.</p>
+</div>
+
+{% if logs %}
+<div class="table-wrapper">
+    <table class="audit-table">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>User</th>
+                <th>Role</th>
+                <th>Action</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td class="timestamp">{{ log.timestamp|date:"d M Y, H:i:s" }}</td>
+                <td class="username">{{ log.user.username|default:"—" }}</td>
+                <td>
+                    <span class="role-badge role-{{ log.user.role|default:'unknown' }}">
+                        {{ log.user.role|default:"—"|capfirst }}
+                    </span>
+                </td>
+                <td>
+                    <span class="action-badge action-{{ log.action|lower|slugify }}">
+                        {{ log.action }}
+                    </span>
+                </td>
+                <td class="details">{{ log.details|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No audit log entries found.</p>
+</div>
+{% endif %}
+
+<style>
+.page-header {
+    margin-bottom: 24px;
+}
+.page-header h2 {
+    margin: 0 0 4px 0;
+}
+.text-muted {
+    color: #888;
+    font-size: 0.9rem;
+    margin: 0;
+}
+.table-wrapper {
+    overflow-x: auto;
+}
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.audit-table thead tr {
+    background-color: #f0f0f0;
+}
+.audit-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd;
+}
+.audit-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+.audit-table tbody tr:hover {
+    background-color: #fafafa;
+}
+.timestamp {
+    white-space: nowrap;
+    color: #555;
+    font-size: 0.85rem;
+}
+.username {
+    font-weight: 500;
+}
+.details {
+    color: #444;
+    max-width: 360px;
+}
+/* Role badges */
+.role-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+.role-admin    { background: #fde8e8; color: #b91c1c; }
+.role-manager  { background: #e0f2fe; color: #0369a1; }
+.role-staff    { background: #dcfce7; color: #15803d; }
+.role-unknown  { background: #f3f4f6; color: #6b7280; }
+/* Action badges */
+.action-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: #f3f4f6;
+    color: #374151;
+}
+.action-login           { background: #dcfce7; color: #15803d; }
+.action-logout          { background: #f3f4f6; color: #6b7280; }
+.action-stock-in        { background: #e0f2fe; color: #0369a1; }
+.action-stock-out       { background: #fff7ed; color: #c2410c; }
+.action-book-added      { background: #f5f3ff; color: #6d28d9; }
+.action-book-edited     { background: #fefce8; color: #a16207; }
+.action-book-deleted    { background: #fde8e8; color: #b91c1c; }
+.action-user-created    { background: #f5f3ff; color: #6d28d9; }
+.action-user-edited     { background: #fefce8; color: #a16207; }
+.action-user-deactivated{ background: #fde8e8; color: #b91c1c; }
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    color: #888;
+}
+</style>
+{% endblock %}
