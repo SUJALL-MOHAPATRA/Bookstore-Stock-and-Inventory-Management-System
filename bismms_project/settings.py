@@ -165,3 +165,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# ------------------------------------------------------------------
+# Session Timeout — 30 minutes of inactivity
+# ------------------------------------------------------------------
+SESSION_COOKIE_AGE = 1800          # 30 minutes in seconds
+SESSION_SAVE_EVERY_REQUEST = True  # reset timer on every request
