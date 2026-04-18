@@ -3,7 +3,10 @@
 {% block content %}
 <div class="page-header">
     <h1>Low Stock Report</h1>
-    <a href="{% url 'reports:stock_report' %}" class="btn secondary">Back to Reports</a>
+    <div>
+        <a href="{% url 'reports:stock_report' %}" class="btn secondary">Back to Reports</a>
+        <a href="{% url 'reports:lowstock_report' %}?export=pdf" class="btn">Export PDF</a>
+    </div>
 </div>
 
 {% if low_stock_books %}
