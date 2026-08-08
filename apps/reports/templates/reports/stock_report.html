@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Stock Report — BISMMS{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Current Stock Report</h1>
+    <div>
+        <a href="{% url 'reports:movement_report' %}" class="btn secondary">Movement Report</a>
+        <a href="{% url 'reports:lowstock_report' %}" class="btn secondary">Low Stock Report</a>
+        <a href="{% url 'reports:stock_report' %}?export=pdf" class="btn">Export PDF</a>
+    </div>
+</div>
+
+<div class="report-summary">
+    <div class="summary-card">
+        <h3>{{ total_books }}</h3>
+        <p>Total Books</p>
+    </div>
+    <div class="summary-card danger">
+        <h3>{{ total_low_stock }}</h3>
+        <p>Low Stock Items</p>
+    </div>
+</div>
+
+{% if books %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Reorder Level</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.category|default:"—" }}</td>
+            <td>₹{{ book.price }}</td>
+            <td>{{ book.quantity }}</td>
+            <td>{{ book.reorder_level }}</td>
+            <td>
+                {% if book.is_low_stock %}
+                <span class="badge danger">Low Stock</span>
+                {% else %}
+                <span class="badge success">OK</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty-msg">No books in inventory yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Stock History — BISMMS{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Stock History</h1>
+    <div>
+        <a href="{% url 'stock:stockin_form' %}" class="btn">+ Stock In</a>
+        <a href="{% url 'stock:stockout_form' %}" class="btn secondary">+ Stock Out</a>
+    </div>
+</div>
+
+<h2 style="margin-bottom:12px;">Stock-In Records</h2>
+{% if stock_ins %}
+<table class="data-table" style="margin-bottom:32px;">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Book</th>
+            <th>Supplier</th>
+            <th>Quantity</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in stock_ins %}
+        <tr>
+            <td>{{ record.created_at|date:"d M Y, H:i" }}</td>
+            <td>{{ record.book.title }}</td>
+            <td>{{ record.supplier|default:"—" }}</td>
+            <td>{{ record.quantity }}</td>
+            <td>{{ record.notes|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty-msg" style="margin-bottom:32px;">No stock-in records yet.</p>
+{% endif %}
+
+<h2 style="margin-bottom:12px;">Stock-Out Records</h2>
+{% if stock_outs %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Book</th>
+            <th>Quantity</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in stock_outs %}
+        <tr>
+            <td>{{ record.created_at|date:"d M Y, H:i" }}</td>
+            <td>{{ record.book.title }}</td>
+            <td>{{ record.quantity }}</td>
+            <td>{{ record.notes|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty-msg">No stock-out records yet.</p>
+{% endif %}
+{% endblock %}

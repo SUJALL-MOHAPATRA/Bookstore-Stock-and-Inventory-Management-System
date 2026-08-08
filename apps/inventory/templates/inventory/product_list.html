@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Books — BISMMS{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Books</h1>
+    <a href="{% url 'inventory:book_add' %}" class="btn">+ Add Book</a>
+</div>
+
+<form method="GET" class="search-form">
+    <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search by title, author or ISBN...">
+    <button type="submit">Search</button>
+    {% if query %}
+    <a href="{% url 'inventory:book_list' %}">Clear</a>
+    {% endif %}
+</form>
+
+{% if books %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.isbn }}</td>
+            <td>{{ book.category|default:"—" }}</td>
+            <td>₹{{ book.price }}</td>
+            <td>{{ book.quantity }}</td>
+            <td>
+                {% if book.is_low_stock %}
+                <span class="badge danger">Low Stock</span>
+                {% else %}
+                <span class="badge success">OK</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'inventory:book_detail' book.pk %}">View</a> |
+                <a href="{% url 'inventory:book_edit' book.pk %}">Edit</a> |
+                <a href="{% url 'inventory:book_delete' book.pk %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty-msg">No books found. <a href="{% url 'inventory:book_add' %}">Add one?</a></p>
+{% endif %}
+{% endblock %}

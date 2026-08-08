@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Low Stock Alerts — BISMMS{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Low Stock Alerts</h1>
+    <a href="{% url 'reports:lowstock_report' %}" class="btn secondary">View Full Report</a>
+</div>
+
+{% if low_stock_books %}
+<div class="alert-banner">
+    ⚠️ {{ total_low_stock }} book{{ total_low_stock|pluralize }} below reorder level
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Current Quantity</th>
+            <th>Reorder Level</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in low_stock_books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.category|default:"—" }}</td>
+            <td><span class="badge danger">{{ book.quantity }}</span></td>
+            <td>{{ book.reorder_level }}</td>
+            <td>
+                <a href="{% url 'stock:stockin_form' %}" class="btn">Record Stock-In</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert-banner success">
+    ✅ All books are above reorder levels. No alerts at this time.
+</div>
+{% endif %}
+{% endblock %}

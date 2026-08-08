@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} — BISMMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ book.title }}</h1>
+    <div>
+        <a href="{% url 'inventory:book_edit' book.pk %}" class="btn">Edit</a>
+        <a href="{% url 'inventory:book_list' %}" class="btn secondary">Back</a>
+    </div>
+</div>
+
+<div class="detail-card">
+    <div class="detail-row"><span>Author</span><strong>{{ book.author }}</strong></div>
+    <div class="detail-row"><span>ISBN</span><strong>{{ book.isbn }}</strong></div>
+    <div class="detail-row"><span>Category</span><strong>{{ book.category|default:"—" }}</strong></div>
+    <div class="detail-row"><span>Publisher</span><strong>{{ book.publisher|default:"—" }}</strong></div>
+    <div class="detail-row"><span>Subject / Course</span><strong>{{ book.subject_course|default:"—" }}</strong></div>
+    <div class="detail-row"><span>Edition</span><strong>{{ book.edition|default:"—" }}</strong></div>
+    <div class="detail-row"><span>Price</span><strong>₹{{ book.price }}</strong></div>
+    <div class="detail-row"><span>Quantity</span><strong>{{ book.quantity }}</strong></div>
+    <div class="detail-row"><span>Reorder Level</span><strong>{{ book.reorder_level }}</strong></div>
+    <div class="detail-row">
+        <span>Stock Status</span>
+        <strong>
+            {% if book.is_low_stock %}
+                <span class="badge danger">Low Stock</span>
+            {% else %}
+                <span class="badge success">In Stock</span>
+            {% endif %}
+        </strong>
+    </div>
+</div>
+
+{% if confirm_delete %}
+<div class="confirm-delete">
+    <p>Are you sure you want to delete <strong>{{ book.title }}</strong>?</p>
+    <form method="POST" action="{% url 'inventory:book_delete' book.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn danger">Yes, Delete</button>
+        <a href="{% url 'inventory:book_detail' book.pk %}" class="btn secondary">Cancel</a>
+    </form>
+</div>
+{% endif %}
+{% endblock %}

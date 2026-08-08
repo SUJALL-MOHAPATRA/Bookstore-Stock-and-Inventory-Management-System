@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — BISMMS{% endblock %}
+{% block content %}
+<div class="dashboard">
+    <h1>Welcome, {{ user.username }}</h1>
+    <p style="color:#777; margin-bottom:24px;">Role: {{ user.get_role_display }}</p>
+
+    {% if user.role == 'admin' or user.role == 'manager' %}
+    <div class="report-summary" style="margin-bottom:32px;">
+        <div class="summary-card">
+            <h3>{{ total_books }}</h3>
+            <p>Total Book Titles</p>
+        </div>
+        <div class="summary-card {% if total_low_stock > 0 %}danger{% endif %}">
+            <h3>{{ total_low_stock }}</h3>
+            <p>Low Stock Alerts</p>
+        </div>
+        <div class="summary-card">
+            <h3>₹{{ total_stock_value|floatformat:2 }}</h3>
+            <p>Total Stock Value</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="dashboard-cards" style="margin-bottom:32px;">
+        <div class="card">
+            <h3>Books</h3>
+            <p>Manage book inventory</p>
+            <a href="{% url 'inventory:book_list' %}">View Books</a>
+        </div>
+        <div class="card">
+            <h3>Stock In</h3>
+            <p>Record incoming books</p>
+            <a href="{% url 'stock:stockin_form' %}">Record Stock In</a>
+        </div>
+        <div class="card">
+            <h3>Stock Out</h3>
+            <p>Record outgoing books</p>
+            <a href="{% url 'stock:stockout_form' %}">Record Stock Out</a>
+        </div>
+        {% if user.role == 'admin' or user.role == 'manager' %}
+        <div class="card">
+            <h3>Suppliers</h3>
+            <p>Manage publishers & distributors</p>
+            <a href="{% url 'suppliers:supplier_list' %}">View Suppliers</a>
+        </div>
+        <div class="card">
+            <h3>Reports</h3>
+            <p>View stock reports</p>
+            <a href="{% url 'reports:stock_report' %}">View Reports</a>
+        </div>
+        <div class="card">
+            <h3>Alerts</h3>
+            <p>View low stock alerts</p>
+            <a href="{% url 'alerts:alert_list' %}">View Alerts</a>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if user.role == 'admin' or user.role == 'manager' %}
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+        <div>
+            <h2 style="margin-bottom:12px; font-size:16px;">Recent Stock-In</h2>
+            {% if recent_stock_ins %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Qty</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in recent_stock_ins %}
+                    <tr>
+                        <td>{{ record.book.title|truncatechars:30 }}</td>
+                        <td>{{ record.quantity }}</td>
+                        <td>{{ record.created_at|date:"d M" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-msg">No stock-in records yet.</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <h2 style="margin-bottom:12px; font-size:16px;">Recent Stock-Out</h2>
+            {% if recent_stock_outs %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Qty</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in recent_stock_outs %}
+                    <tr>
+                        <td>{{ record.book.title|truncatechars:30 }}</td>
+                        <td>{{ record.quantity }}</td>
+                        <td>{{ record.created_at|date:"d M" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="empty-msg">No stock-out records yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Deactivate User — BISMMS{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Deactivate User</h1>
+    <a href="{% url 'accounts:user_list' %}" class="btn secondary">Back</a>
+</div>
+
+<div class="confirm-delete">
+    <p>Are you sure you want to deactivate <strong>{{ user.username }}</strong>?</p>
+    <p style="font-size:13px; margin-top:8px;">They will no longer be able to log in.</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn danger">Yes, Deactivate</button>
+        <a href="{% url 'accounts:user_list' %}" class="btn secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

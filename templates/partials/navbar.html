@@ -1,0 +1,32 @@
+{% load static %}
+<nav class="navbar">
+    <div class="nav-brand">BISMMS</div>
+    <div class="nav-links">
+        <a href="{% url 'dashboard:index' %}" class="{% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">Dashboard</a>
+
+        {% if user.role == 'admin' or user.role == 'manager' or user.role == 'staff' %}
+            <a href="{% url 'inventory:book_list' %}" class="{% if request.resolver_match.app_name == 'inventory' %}active{% endif %}">Books</a>
+            <a href="{% url 'stock:stockin_form' %}" class="{% if request.resolver_match.url_name == 'stockin_form' %}active{% endif %}">Stock In</a>
+            <a href="{% url 'stock:stockout_form' %}" class="{% if request.resolver_match.url_name == 'stockout_form' %}active{% endif %}">Stock Out</a>
+        {% endif %}
+
+        {% if user.role == 'admin' or user.role == 'manager' %}
+            <a href="{% url 'suppliers:supplier_list' %}" class="{% if request.resolver_match.app_name == 'suppliers' %}active{% endif %}">Suppliers</a>
+            <a href="{% url 'reports:stock_report' %}" class="{% if request.resolver_match.app_name == 'reports' %}active{% endif %}">Reports</a>
+            <a href="{% url 'alerts:alert_list' %}" class="{% if request.resolver_match.app_name == 'alerts' %}active{% endif %}">Alerts</a>
+        {% endif %}
+
+        {% if user.role == 'admin' %}
+            <a href="{% url 'accounts:user_list' %}" class="{% if request.resolver_match.url_name == 'user_list' or request.resolver_match.url_name == 'user_add' or request.resolver_match.url_name == 'user_edit' %}active{% endif %}">Users</a>
+            <a href="{% url 'audit:audit_log' %}">Audit Log</a>
+        {% endif %}
+
+        {% if user.is_staff %}
+            <a href="{% url 'admin:index' %}">Admin Panel</a>
+        {% endif %}
+    </div>
+    <div class="nav-user">
+        {{ user.username }} ({{ user.role }})
+        <a href="{% url 'accounts:logout' %}">Logout</a>
+    </div>
+</nav>

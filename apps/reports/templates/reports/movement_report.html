@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Movement Report — BISMMS{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Stock Movement Report</h1>
+    <div>
+        <a href="{% url 'reports:stock_report' %}" class="btn secondary">Back to Reports</a>
+        <a href="{% url 'reports:movement_report' %}?date_from={{ date_from|default:'' }}&date_to={{ date_to|default:'' }}&export=pdf" class="btn">Export PDF</a>
+    </div>
+</div>
+
+<form method="GET" class="search-form" style="margin-bottom:24px;">
+    <label style="font-size:13px;">From:</label>
+    <input type="date" name="date_from" value="{{ date_from|default:'' }}">
+    <label style="font-size:13px;">To:</label>
+    <input type="date" name="date_to" value="{{ date_to|default:'' }}">
+    <button type="submit" class="btn">Filter</button>
+    {% if date_from or date_to %}
+    <a href="{% url 'reports:movement_report' %}">Clear</a>
+    {% endif %}
+</form>
+
+<h2 style="margin-bottom:12px;">Stock-In</h2>
+{% if stock_ins %}
+<table class="data-table" style="margin-bottom:32px;">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Book</th>
+            <th>Supplier</th>
+            <th>Quantity</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in stock_ins %}
+        <tr>
+            <td>{{ record.created_at|date:"d M Y, H:i" }}</td>
+            <td>{{ record.book.title }}</td>
+            <td>{{ record.supplier|default:"—" }}</td>
+            <td>{{ record.quantity }}</td>
+            <td>{{ record.notes|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty-msg" style="margin-bottom:32px;">No stock-in records found.</p>
+{% endif %}
+
+<h2 style="margin-bottom:12px;">Stock-Out</h2>
+{% if stock_outs %}
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Book</th>
+            <th>Quantity</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in stock_outs %}
+        <tr>
+            <td>{{ record.created_at|date:"d M Y, H:i" }}</td>
+            <td>{{ record.book.title }}</td>
+            <td>{{ record.quantity }}</td>
+            <td>{{ record.notes|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty-msg">No stock-out records found.</p>
+{% endif %}
+{% endblock %}
